@@ -68,6 +68,19 @@
                 </div>
             </div>
 
+            <div class="m-4">
+                <label for="details" class="inline-block mb-2 text-gray-500">
+                    Product Details</label>
+                <textarea v-model="form.details"
+                          id="details"
+                          class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg
+                           focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700
+                           dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+
+                </textarea>
+                <div v-if="validationMessage.hasOwnProperty('details')" class="px-2 text-red-500">{{ validationMessage.details[0] }}</div>
+            </div>
+
             <div class="m-4" v-if="previewImageUrls.length > 0">
                 <div class="flex items-center w-full">
                     <img class="h-20 p-2 border border-gray-300 m-1" v-for="(previewImageUrl, iIdx) in previewImageUrls" :key="'productImage'+iIdx" :src="previewImageUrl" width="100" height="100"  alt="image_preview"/>
@@ -98,6 +111,7 @@ export default {
                 name: '',
                 price:'',
                 categories:[],
+                details:'',
                 images:[]
             },
             options: [],
@@ -138,6 +152,7 @@ export default {
             let data = new FormData();
             data.append('name', this.form.name);
             data.append('price', this.form.price);
+            data.append('details', this.form.details);
 
             if (this.form.categories.length > 0){
                 for (let i = 0; i < this.form.categories.length; i++) {

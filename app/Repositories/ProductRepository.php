@@ -16,7 +16,9 @@ class ProductRepository implements ProductRepositoryInterface
 {
     public function all(): JsonResponse
     {
-        $products = Product::orderBy('id', 'DESC')->with('categories', 'images')->get();
+        $products = Product::orderBy('id', 'DESC')->with(['categories', 'images' => function($q) {
+            return $q->orderBy('id', 'DESC');
+        }])->get();
         $products = ProductResource::collection($products);
         return response()->json([
             'status' => ResponseAlias::HTTP_OK,
@@ -33,7 +35,8 @@ class ProductRepository implements ProductRepositoryInterface
             $product = Product::create([
                 'name' => $data['name'],
                 'slug' => Str::slug($data['name']),
-                'price' => $data['price']
+                'price' => $data['price'],
+                'details' => $data['details'],
             ]);
 
             if (empty($product)){
@@ -69,6 +72,33 @@ class ProductRepository implements ProductRepositoryInterface
             DB::rollBack();
             return response()->json([
                 'status' => ResponseAlias::HTTP_BAD_REQUEST,
+                'statusText' => 'Failed',
+                'errors' => $exception->getMessage()
+            ]);
+        }
+    }
+
+    public function show($slug): JsonResponse
+    {
+        try {
+            $product = Product::where('slug', $slug)->with(['categories', 'images' => function($q) {
+                return $q->orderBy('id', 'DESC');
+            }])->first();
+            if (empty($product)) {
+                throw new Exception('Could not find product');
+            }
+
+            $product = new ProductResource($product);
+            return response()->json([
+                'status' => ResponseAlias::HTTP_OK,
+                'statusText' => 'Succeed',
+                'data' => $product,
+                'message' => 'Fetch product successful'
+            ]);
+
+        } catch (Exception $exception) {
+            return response()->json([
+                'status' => ResponseAlias::HTTP_NOT_FOUND,
                 'statusText' => 'Failed',
                 'errors' => $exception->getMessage()
             ]);

@@ -51,7 +51,11 @@
                                     </span>
                                 </td>
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">{{ product.statusLabel }}</td>
-                                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">Edit, Delete</td>
+                                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
+                                    <span>
+                                        <router-link class="p-2 bg-green-500 text-white rounded cursor-pointer" :to="{name : 'product_show', params: { slug: product.slug } }">Show</router-link>
+                                    </span>
+                                </td>
                             </tr>
                             </tbody>
                         </table>

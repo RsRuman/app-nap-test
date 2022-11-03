@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('slug')->unique();
             $table->decimal('price', 10, 2);
+            $table->text('details');
             $table->boolean('status')->default(Product::Status['Active']);
             $table->softDeletes();
             $table->timestamps();

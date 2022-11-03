@@ -18,6 +18,8 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
+            'price' => $this->price,
+            'details' => $this->details,
             'status' => $this->status,
             'statusLabel' => $this->status_label,
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),

@@ -1,13 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
-import Login from "../Pages/Login.vue";
-import Register from "../Pages/Register.vue";
+import Login from "../Pages/Auth/Login.vue";
+import Register from "../Pages/Auth/Register.vue";
 import store from "../Store/store";
 import Home from "../Home.vue";
 
 
 
-const Product = () => import('../Pages/Product.vue');
-const ProductCreate = () => import('../Pages/CreateUpdateProduct.vue');
+const Product = () => import('../Pages/Product/Index.vue');
+const ProductShow = () => import('../Pages/Product/Show.vue');
+const ProductCreate = () => import('../Pages/Product/CreateUpdate.vue');
 
 
 const routes = [
@@ -44,6 +45,16 @@ const routes = [
         meta:{
             middleware:"auth",
             title:'Product'
+        }
+    },
+
+    {
+        path: '/products/:slug/show',
+        component: ProductShow,
+        name: 'product_show',
+        meta:{
+            middleware:"auth",
+            title:'ProductShow'
         }
     },
 

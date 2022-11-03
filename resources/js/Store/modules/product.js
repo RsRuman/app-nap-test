@@ -3,6 +3,7 @@ import router from "../../Router/router";
 const state = {
     categories: [],
     products: [],
+    product: {},
 };
 
 const getters = {
@@ -12,6 +13,10 @@ const getters = {
 
     productList(state){
         return state.products;
+    },
+
+    productDetail(state){
+        return state.product;
     }
 };
 
@@ -34,6 +39,17 @@ const actions = {
             .then((response) => {
                 if (response.data.status === 200){
                     commit('setProducts',response.data.data)
+                }
+            })
+    },
+
+    //Get product
+    async getProduct({commit, rootState}, productSlug){
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + rootState.auth.authenticated;
+        return await axios.get(`api/products/${productSlug}/show`)
+            .then((response) => {
+                if (response.data.status === 200){
+                    commit('setProductDetail',response.data.data)
                 }
             })
     },
@@ -64,6 +80,10 @@ const mutations = {
 
     setProducts (state, value) {
         state.products = value;
+    },
+
+    setProductDetail (state, value) {
+        state.product = value;
     },
 
     addProduct (state, value) {

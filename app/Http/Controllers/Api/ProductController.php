@@ -22,12 +22,17 @@ class ProductController extends Controller
         return $this->productRepository->all();
     }
 
+    public function show($slug){
+        return $this->productRepository->show($slug);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:25|unique:products',
             'price' => 'required|numeric',
             'categories' => 'required|array',
+            'details' => 'required|max:255',
             'images' => 'nullable|array',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
