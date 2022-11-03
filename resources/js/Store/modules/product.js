@@ -27,7 +27,7 @@ const actions = {
         return await axios.get('api/categories')
             .then((response) => {
                 if (response.data.status === 200){
-                    commit('setCategories',response.data.data)
+                    commit('setCategories',response.data.data);
                 }
             })
     },
@@ -38,7 +38,7 @@ const actions = {
         return await axios.get('api/products')
             .then((response) => {
                 if (response.data.status === 200){
-                    commit('setProducts',response.data.data)
+                    commit('setProducts',response.data.data);
                 }
             })
     },
@@ -49,8 +49,20 @@ const actions = {
         return await axios.get(`api/products/${productSlug}/show`)
             .then((response) => {
                 if (response.data.status === 200){
-                    commit('setProductDetail',response.data.data)
+                    commit('setProductDetail',response.data.data);
                 }
+            })
+    },
+
+    //Destroy product
+    async destroyProduct({commit, rootState}, productSlug){
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + rootState.auth.authenticated;
+        return await axios.delete(`api/products/${productSlug}/delete`)
+            .then((response) => {
+                if (response.data.status === 200){
+                    commit('removeProduct',productSlug);
+                }
+                return response;
             })
     },
 
@@ -112,6 +124,13 @@ const mutations = {
         const index = state.products.map((item) => item.slug).indexOf(value.slug);
         if (index > -1){
             state.products.splice(index, 1, value);
+        }
+    },
+
+    removeProduct (state, value) {
+        const index = state.products.map((item) => item.slug).indexOf(value);
+        if (index > -1){
+            state.products.splice(index, 1);
         }
     }
 };

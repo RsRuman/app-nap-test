@@ -105,7 +105,7 @@ class ProductRepository implements ProductRepositoryInterface
         }
     }
 
-    public function update($data, $slug)
+    public function update($data, $slug): JsonResponse
     {
         try {
             DB::beginTransaction();
@@ -152,6 +152,29 @@ class ProductRepository implements ProductRepositoryInterface
                 'status' => ResponseAlias::HTTP_BAD_REQUEST,
                 'statusText' => 'Failed',
                 'errors' => $exception->getMessage()
+            ]);
+        }
+    }
+
+    public function destroy($slug): JsonResponse
+    {
+        try {
+            $product = Product::where('slug', $slug)->first();
+            if (empty($product)){
+                throw new Exception('Product not found');
+            }
+            $product->delete();
+            return response()->json([
+                'status' => ResponseAlias::HTTP_OK,
+                'statusText' => 'Succeed',
+                'message' => 'Product deleted successfully'
+            ]);
+
+        } catch (Exception $exception){
+            return response()->json([
+                'status' => ResponseAlias::HTTP_NOT_FOUND,
+                'statusText' => 'Failed',
+                'message' => $exception->getMessage()
             ]);
         }
     }

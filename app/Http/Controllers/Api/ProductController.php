@@ -48,7 +48,8 @@ class ProductController extends Controller
         return $this->productRepository->store($request);
     }
 
-    public function update(Request $request, $slug){
+    public function update(Request $request, $slug): JsonResponse
+    {
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:25|unique:products,name,'.Product::where('slug', $slug)->first()->id,
@@ -67,5 +68,9 @@ class ProductController extends Controller
             ]);
         }
         return $this->productRepository->update($request, $slug);
+    }
+
+    public function destroy($slug){
+        return $this->productRepository->destroy($slug);
     }
 }

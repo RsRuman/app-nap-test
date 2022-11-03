@@ -31,5 +31,6 @@ Route::group(['middleware' => ['auth:api']], function (){
         Route::get('products/{slug}/show', 'show');
         Route::put('products/{slug}/update', 'update');
         Route::post('products', 'store');
+        Route::delete('products/{slug}/delete', 'destroy');
     });
 });

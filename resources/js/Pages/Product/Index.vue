@@ -55,7 +55,7 @@
                                     <span>
                                         <router-link class="px-2 py-1 m-1 bg-green-500 text-white rounded cursor-pointer" :to="{name : 'product_show', params: { slug: product.slug } }">Show</router-link>
                                         <router-link class="px-2 py-1 m-1 bg-blue-500 text-white rounded cursor-pointer" :to="{name : 'product_update', params: { slug: product.slug } }">Edit</router-link>
-                                        <router-link class="px-2 py-1 m-1 bg-red-500 text-white rounded cursor-pointer" :to="{name : 'product_show', params: { slug: product.slug } }">Delete</router-link>
+                                        <button @click.prevent="deleteProduct(product)" class="px-2 py-1 m-1 bg-red-500 text-white rounded cursor-pointer">Delete</button>
                                     </span>
                                 </td>
                             </tr>
@@ -81,13 +81,48 @@ export default {
     methods: {
         ...mapActions([
             'getProducts',
+            'destroyProduct'
         ]),
-
 
         async fetchProducts(){
             return await this.getProducts().then(() => {
                 console.log(this.productList);
             });
+        },
+
+        async deleteProduct(product){
+            this.$swal({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.destroyProduct(product.slug)
+                        .then((response) => {
+                            if (response.status === 200){
+                                this.$swal({
+                                    position: 'center',
+                                    icon: 'success',
+                                    title: response.data.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            } else {
+                                this.$swal({
+                                    position: 'center',
+                                    icon: 'error',
+                                    title: response.data.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            }
+                        })
+                }
+            })
         }
     },
 
