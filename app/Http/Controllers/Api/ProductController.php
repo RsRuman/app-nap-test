@@ -28,7 +28,8 @@ class ProductController extends Controller
             'name' => 'required|max:25|unique:products',
             'price' => 'required|numeric',
             'categories' => 'required|array',
-            'images' => 'nullable|array'
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         if ($validator->fails()){

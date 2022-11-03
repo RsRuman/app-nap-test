@@ -41,14 +41,15 @@ class ProductRepository implements ProductRepositoryInterface
             }
 
             if ($data['images']){
-                foreach ($data['images'] as $image)
-                $file_path = Storage::disk('public')->put('product_images', $image);
-                $productImage = $product->images()->create([
-                    'image_path' => $file_path
-                ]);
+                foreach ($data['images'] as $image){
+                    $file_path = Storage::disk('public')->put('product_images', $image);
+                    $productImage = $product->images()->create([
+                        'image_path' => $file_path
+                    ]);
 
-                if (empty($productImage)){
-                    throw new Exception('Could not create product image');
+                    if (empty($productImage)){
+                        throw new Exception('Could not create product image');
+                    }
                 }
             }
 

@@ -8,7 +8,8 @@
                     v-model="form.name"
                     type="text" id="name"
                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required="">
+                    >
+                <div v-if="validationMessage.hasOwnProperty('name')" class="px-2 text-red-500">{{ validationMessage.name[0] }}</div>
             </div>
 
             <div class="m-4">
@@ -23,7 +24,8 @@
                     placeholder="0.00"
                     id="price"
                     class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    required="">
+                    >
+                <div v-if="validationMessage.hasOwnProperty('price')" class="px-2 text-red-500">{{ validationMessage.price[0] }}</div>
             </div>
 
             <div class="m-4">
@@ -39,6 +41,7 @@
                     placeholder="Pick Categories"
                     label="name"
                     track-by="name"/>
+                <div v-if="validationMessage.hasOwnProperty('categories')" class="px-2 text-red-500">{{ validationMessage.categories[0] }}</div>
             </div>
 
             <div class="m-4">
@@ -61,6 +64,7 @@
                         </div>
                         <input @change="onChange($event)" type="file" multiple class="opacity-0"/>
                     </label>
+                    <div v-if="validationMessage.hasOwnProperty('image')" class="px-2 text-red-500">{{ validationMessage.image[0] }}</div>
                 </div>
             </div>
 
@@ -98,32 +102,26 @@ export default {
             },
             options: [],
 
-            previewImageUrls: []
+            previewImageUrls: [],
+
+            validationMessage:{}
         }
     },
 
     mounted() {
         this.fetchCategories();
-        this.fetchProducts();
     },
 
     methods: {
         ...mapActions([
             'storeProduct',
-            'getCategories',
-            'getProducts',
+            'getCategories'
         ]),
 
         //Fetch Product Categories
         async fetchCategories(){
             return await this.getCategories().then(() => {
                 this.options = this.productCategories;
-            });
-        },
-
-        async fetchProducts(){
-            return await this.getProducts().then(() => {
-                console.log(this.productList);
             });
         },
 
@@ -155,7 +153,35 @@ export default {
 
             return await this.storeProduct(data)
                 .then((response) => {
-                    console.log(response);
+                    if (response.data.status === 200){
+                        this.$swal({
+                            position: 'center',
+                            icon: 'success',
+                            title: response.data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+
+                    if (response.data.status === 406){
+                        this.$swal({
+                            position: 'center',
+                            icon: 'error',
+                            title: 'Please provide valid data',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
+
+                    if (response.data.status === 400){
+                        this.$swal({
+                            position: 'center',
+                            icon: 'error',
+                            title: response.data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                    }
                 })
         }
     },
@@ -165,8 +191,23 @@ export default {
             'user',
             'authenticated',
             'productCategories',
-            'productList',
-        ])
+            'validationError'
+        ]),
+
+        checkValidationError(){
+            return JSON.parse(JSON.stringify(this.validationError));
+        }
+    },
+
+    watch: {
+        checkValidationError: {
+            handler: function handler(newVal, oldVal){
+                if (newVal !== oldVal){
+                    this.validationMessage = this.validationError;
+                }
+            },
+            deep: true
+        }
     }
 }
 </script>

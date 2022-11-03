@@ -40,9 +40,9 @@
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
                                     <span v-for="(category, cIdx) in product.categories" :key="'category'+cIdx" class="px-2 py-1 rounded bg-red-500 text-white mx-1">{{ category.name }}</span>
                                 </td>
-                                <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
+                                <td class="text-sm text-gray-900 font-light px-4 py-2 whitespace-nowrap border-r">
                                     <span class="flex items-center justify-center w-full">
-                                        <img class="h-10 w-10 p-2 border border-gray-300 m-1"
+                                        <img class="h-10 w-10 border border-gray-300 m-1"
                                              v-if="product.images.length > 0" v-for="(image, iIdx) in product.images" :key="'image'+iIdx"
                                              :src="image.imagePath"
                                              width="50"

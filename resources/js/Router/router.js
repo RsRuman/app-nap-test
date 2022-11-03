@@ -38,7 +38,7 @@ const routes = [
     },
 
     {
-        path: '/product',
+        path: '/products',
         component: Product,
         name: 'product',
         meta:{

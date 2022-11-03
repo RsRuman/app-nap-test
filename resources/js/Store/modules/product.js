@@ -1,3 +1,5 @@
+import router from "../../Router/router";
+
 const state = {
     categories: [],
     products: [],
@@ -39,10 +41,11 @@ const actions = {
     //Store product
     async storeProduct({commit, rootState}, formData){
         axios.defaults.headers.common['Authorization'] = 'Bearer ' + rootState.auth.authenticated;
-        return await axios.post('api/products/store', formData,)
+        return await axios.post('api/products', formData,)
             .then((response) => {
                 if (response.data.status === 200){
                     commit('addProduct', response.data.data);
+                    router.push('/products');
                 }
 
                 if (response.data.status === 406){
