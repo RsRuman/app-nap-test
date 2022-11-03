@@ -29,6 +29,7 @@ Route::group(['middleware' => ['auth:api']], function (){
     Route::controller(ProductController::class)->group(function (){
         Route::get('products', 'index');
         Route::get('products/{slug}/show', 'show');
+        Route::put('products/{slug}/update', 'update');
         Route::post('products', 'store');
     });
 });

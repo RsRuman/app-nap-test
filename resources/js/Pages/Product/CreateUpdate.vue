@@ -108,6 +108,7 @@ export default {
     data() {
         return {
             form: {
+                slug: '',
                 name: '',
                 price:'',
                 categories:[],
@@ -124,18 +125,35 @@ export default {
 
     mounted() {
         this.fetchCategories();
+        if (this.$route.params.slug){
+            this.fetchProduct(this.$route.params.slug);
+        }
     },
 
     methods: {
         ...mapActions([
             'storeProduct',
-            'getCategories'
+            'updateProduct',
+            'getCategories',
+            'getProduct'
         ]),
 
         //Fetch Product Categories
         async fetchCategories(){
             return await this.getCategories().then(() => {
                 this.options = this.productCategories;
+            });
+        },
+
+        //Fetch Product
+        async fetchProduct(slug){
+            return await this.getProduct(slug).then(() => {
+                this.form.slug = this.productDetail.slug;
+                this.form.name = this.productDetail.name;
+                this.form.price = this.productDetail.price;
+                this.form.categories = this.productDetail.categories;
+                this.form.details = this.productDetail.details;
+                this.previewImageUrls = this.productDetail.images.map((item) => item.imagePath);
             });
         },
 
@@ -166,38 +184,80 @@ export default {
                 }
             }
 
-            return await this.storeProduct(data)
-                .then((response) => {
-                    if (response.data.status === 200){
-                        this.$swal({
-                            position: 'center',
-                            icon: 'success',
-                            title: response.data.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    }
+            if (this.form.slug === ''){
+                return await this.storeProduct(data)
+                    .then((response) => {
+                        if (response.data.status === 200){
+                            this.$swal({
+                                position: 'center',
+                                icon: 'success',
+                                title: response.data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
 
-                    if (response.data.status === 406){
-                        this.$swal({
-                            position: 'center',
-                            icon: 'error',
-                            title: 'Please provide valid data',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    }
+                        if (response.data.status === 406){
+                            this.$swal({
+                                position: 'center',
+                                icon: 'error',
+                                title: 'Please provide valid data',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
 
-                    if (response.data.status === 400){
-                        this.$swal({
-                            position: 'center',
-                            icon: 'error',
-                            title: response.data.message,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    }
-                })
+                        if (response.data.status === 400){
+                            this.$swal({
+                                position: 'center',
+                                icon: 'error',
+                                title: response.data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                    })
+            } else {
+                data.append('_method', 'PUT');
+                const productObject = {
+                    'slug' : this.form.slug,
+                    'product' : data
+                };
+                return await this.updateProduct(productObject)
+                    .then((response) => {
+                        if (response.data.status === 200){
+                            this.$swal({
+                                position: 'center',
+                                icon: 'success',
+                                title: response.data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+
+                        if (response.data.status === 406){
+                            this.$swal({
+                                position: 'center',
+                                icon: 'error',
+                                title: 'Please provide valid data',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+
+                        if (response.data.status === 400){
+                            this.$swal({
+                                position: 'center',
+                                icon: 'error',
+                                title: response.data.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        }
+                    })
+            }
+
+
         }
     },
 
@@ -206,6 +266,7 @@ export default {
             'user',
             'authenticated',
             'productCategories',
+            'productDetail',
             'validationError'
         ]),
 

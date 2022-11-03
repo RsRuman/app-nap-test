@@ -2,7 +2,7 @@
     <div class="md:container md:mx-auto">
         <div class="flex items-center justify-between w-full">
             <h1 class="text-center p-4 text-lg font-bold text-gray-500">Products Table</h1>
-            <router-link class="text-center px-4 py-2 rounded bg-red-500 text-white" :to="{name : 'product_create_update' }">Create Product</router-link>
+            <router-link class="text-center px-4 py-2 rounded bg-red-500 text-white" :to="{name : 'product_create' }">Create Product</router-link>
         </div>
         <div class="flex flex-col">
             <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
@@ -54,7 +54,7 @@
                                 <td class="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap border-r">
                                     <span>
                                         <router-link class="px-2 py-1 m-1 bg-green-500 text-white rounded cursor-pointer" :to="{name : 'product_show', params: { slug: product.slug } }">Show</router-link>
-                                        <router-link class="px-2 py-1 m-1 bg-blue-500 text-white rounded cursor-pointer" :to="{name : 'product_show', params: { slug: product.slug } }">Edit</router-link>
+                                        <router-link class="px-2 py-1 m-1 bg-blue-500 text-white rounded cursor-pointer" :to="{name : 'product_update', params: { slug: product.slug } }">Edit</router-link>
                                         <router-link class="px-2 py-1 m-1 bg-red-500 text-white rounded cursor-pointer" :to="{name : 'product_show', params: { slug: product.slug } }">Delete</router-link>
                                     </span>
                                 </td>
@@ -73,12 +73,6 @@ import {mapActions, mapGetters} from "vuex";
 
 export default {
     name: "Product",
-
-    data() {
-        return {
-
-        }
-    },
 
     mounted() {
         this.fetchProducts();

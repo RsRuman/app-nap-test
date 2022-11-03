@@ -61,7 +61,17 @@ const routes = [
     {
         path: '/products/create',
         component: ProductCreateUpdate,
-        name: 'product_create_update',
+        name: 'product_create',
+        meta:{
+            middleware:"auth",
+            title:'ProductCreateUpdate'
+        }
+    },
+
+    {
+        path: '/products/:slug/edit',
+        component: ProductCreateUpdate,
+        name: 'product_update',
         meta:{
             middleware:"auth",
             title:'ProductCreateUpdate'

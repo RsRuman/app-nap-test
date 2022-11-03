@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Product;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -45,5 +46,26 @@ class ProductController extends Controller
             ]);
         }
         return $this->productRepository->store($request);
+    }
+
+    public function update(Request $request, $slug){
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:25|unique:products,name,'.Product::where('slug', $slug)->first()->id,
+            'price' => 'required|numeric',
+            'categories' => 'required|array',
+            'details' => 'required|max:255',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        if ($validator->fails()){
+            return response()->json([
+                'status' => ResponseAlias::HTTP_NOT_ACCEPTABLE,
+                'statusText' => 'Failed',
+                'errors' => $validator->getMessageBag()->getMessages()
+            ]);
+        }
+        return $this->productRepository->update($request, $slug);
     }
 }

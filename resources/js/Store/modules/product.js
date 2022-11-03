@@ -70,6 +70,24 @@ const actions = {
 
                 return response;
             })
+    },
+
+    //Update product
+    async updateProduct({commit, rootState}, formData){
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + rootState.auth.authenticated;
+        return await axios.post(`api/products/${formData.slug}/update`, formData.product)
+            .then((response) => {
+                if (response.data.status === 200){
+                    commit('setUpdateProduct', response.data.data);
+                    router.push('/products');
+                }
+
+                if (response.data.status === 406){
+                    commit('setValidationError', response.data.errors);
+                }
+
+                return response;
+            })
     }
 };
 
@@ -88,6 +106,13 @@ const mutations = {
 
     addProduct (state, value) {
         state.products.unshift(value);
+    },
+
+    setUpdateProduct (state, value) {
+        const index = state.products.map((item) => item.slug).indexOf(value.slug);
+        if (index > -1){
+            state.products.splice(index, 1, value);
+        }
     }
 };
 

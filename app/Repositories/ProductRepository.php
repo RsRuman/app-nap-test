@@ -104,4 +104,55 @@ class ProductRepository implements ProductRepositoryInterface
             ]);
         }
     }
+
+    public function update($data, $slug)
+    {
+        try {
+            DB::beginTransaction();
+            $product = Product::where('slug', $slug)->first();
+            $productU = $product->update([
+                'name' => $data['name'],
+                'slug' => Str::slug($data['name']),
+                'price' => $data['price'],
+                'details' => $data['details'],
+            ]);
+
+            if (empty($productU)){
+                throw new Exception('Could not update product');
+            }
+
+            if ($data['images']){
+                foreach ($data['images'] as $image){
+                    $file_path = Storage::disk('public')->put('product_images', $image);
+                    $productImage = $product->images()->create([
+                        'image_path' => $file_path
+                    ]);
+
+                    if (empty($productImage)){
+                        throw new Exception('Could not update product image');
+                    }
+                }
+            }
+
+            $product->categories()->sync($data['categories']);
+            DB::commit();
+
+            $product = $product->fresh();
+            $product = new ProductResource($product->load('categories', 'images'));
+            return response()->json([
+                'status' => ResponseAlias::HTTP_OK,
+                'statusText' => 'Succeed',
+                'data' => $product,
+                'message' => 'Product updated successfully'
+            ]);
+
+        } catch (Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => ResponseAlias::HTTP_BAD_REQUEST,
+                'statusText' => 'Failed',
+                'errors' => $exception->getMessage()
+            ]);
+        }
+    }
 }
