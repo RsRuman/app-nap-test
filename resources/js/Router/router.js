@@ -8,7 +8,7 @@ import Home from "../Home.vue";
 
 const Product = () => import('../Pages/Product/Index.vue');
 const ProductShow = () => import('../Pages/Product/Show.vue');
-const ProductCreate = () => import('../Pages/Product/CreateUpdate.vue');
+const ProductCreateUpdate = () => import('../Pages/Product/CreateUpdate.vue');
 
 
 const routes = [
@@ -60,11 +60,11 @@ const routes = [
 
     {
         path: '/products/create',
-        component: ProductCreate,
-        name: 'product_create',
+        component: ProductCreateUpdate,
+        name: 'product_create_update',
         meta:{
             middleware:"auth",
-            title:'ProductCreate'
+            title:'ProductCreateUpdate'
         }
     }
 ]
