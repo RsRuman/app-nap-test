@@ -6,7 +6,8 @@ import Home from "../Home.vue";
 
 
 
-const Product = () => import('../Pages/Product.vue')
+const Product = () => import('../Pages/Product.vue');
+const ProductCreate = () => import('../Pages/CreateUpdateProduct.vue');
 
 
 const routes = [
@@ -43,6 +44,16 @@ const routes = [
         meta:{
             middleware:"auth",
             title:'Product'
+        }
+    },
+
+    {
+        path: '/products/create',
+        component: ProductCreate,
+        name: 'product_create',
+        meta:{
+            middleware:"auth",
+            title:'ProductCreate'
         }
     }
 ]

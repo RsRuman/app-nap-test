@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,7 +21,13 @@ Route::controller(AuthController::class)->group(function (){
 });
 
 Route::group(['middleware' => ['auth:api']], function (){
+
+    Route::controller(CategoryController::class)->group(function (){
+        Route::get('categories', 'index');
+    });
+
     Route::controller(ProductController::class)->group(function (){
+        Route::get('products', 'index');
         Route::post('products/store', 'store');
     });
 });
