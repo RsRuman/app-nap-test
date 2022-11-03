@@ -153,7 +153,7 @@ export default {
                 this.form.price = this.productDetail.price;
                 this.form.categories = this.productDetail.categories;
                 this.form.details = this.productDetail.details;
-                this.previewImageUrls = this.productDetail.images.map((item) => item.imagePath);
+                this.previewImageUrls = Object.keys(this.productDetail).length > 0 ? this.productDetail.images.map((item) => item.imagePath) : [];
             });
         },
 

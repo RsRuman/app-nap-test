@@ -51,6 +51,7 @@ const actions = {
                 if (response.data.status === 200){
                     commit('setProductDetail',response.data.data);
                 }
+                return response;
             })
     },
 

@@ -4,7 +4,7 @@
     <div class="container mx-auto font-kumbh text-base">
 
         <!-- Main Content -->
-        <main class="w-full flex flex-col lg:flex-row md:px-20">
+        <main v-if="Object.keys(productDetail).length > 0" class="w-full flex flex-col lg:flex-row md:px-20">
             <!-- Gallery -->
             <section
                 class="h-fit flex-col gap-8 mt-8 sm:flex sm:flex-row sm:gap-4 sm:h-full sm:mt-12 sm:mx-2 md:gap-8 md:mx-4 lg:flex-col lg:mx-0 lg:mt-18">
@@ -32,7 +32,7 @@
                 </picture>
                 <div
                     class="thumbnails hidden justify-between gap-4 m-auto sm:flex sm:flex-col sm:justify-start sm:items-center sm:h-fit md:gap-5 lg:flex-row">
-                    <div v-if="productDetail" v-for="(image, iIdx) in productDetail.images" :key="'image'+iIdx" :id="iIdx"
+                    <div v-for="(image, iIdx) in productDetail.images" :key="'image'+iIdx" :id="iIdx"
                          class="w-1/5 cursor-pointer rounded-xl sm:w-28 md:w-32 lg:w-[72px] xl:w-[78px] ring-active">
                         <img
                             @click="setSelectedImage(image)"
@@ -45,7 +45,7 @@
             <!-- Text -->
             <section class="w-full p-6 lg:mt-16 lg:pr-20 lg:py-10 2xl:pr-40 2xl:mt-20">
                 <h4 class="font-bold text-orange mb-2 uppercase text-xs tracking-widest">
-                    <span class="m-1" v-if="productDetail" v-for="(category, cIdx) in productDetail.categories" :key="'category'+cIdx">
+                    <span class="m-1" v-for="(category, cIdx) in productDetail.categories" :key="'category'+cIdx">
                         {{ category.name }}
                     </span>
                 </h4>
@@ -115,7 +115,7 @@ export default {
 
     mounted() {
         this.fetchProduct().then(() => {
-            if (this.productDetail){
+            if (Object.keys(this.productDetail).length > 0){
                 this.selectedImage = this.productDetail.images[0].imagePath;
             }
         });
@@ -127,8 +127,10 @@ export default {
         ]),
 
         async fetchProduct(){
-            return await this.getProduct(this.$route.params.slug).then(() => {
-                console.log(this.productDetail)
+            return await this.getProduct(this.$route.params.slug).then((response) => {
+                if (response.data.status !== 200){
+                    this.$store.commit('setProductDetail', {});
+                }
             });
         },
 
